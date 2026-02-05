@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Small Story</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --cream: #f9f6f1;
+            --charcoal: #2a2a2a;
+            --muted: #6a6a6a;
+            --accent: #d4a574;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2.5rem;
+            --spacing-xl: 4rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #f9f6f1 0%, #f5ede1 50%, #f9f6f1 100%);
+            color: var(--charcoal);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            line-height: 1.7;
+            padding: var(--spacing-md);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(212, 165, 116, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 165, 116, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(42, 42, 42, 0.01) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(212, 165, 116, 0.015) 2px,
+                    rgba(212, 165, 116, 0.015) 4px);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            max-width: 560px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            transform: translateX(20px);
+            padding: var(--spacing-lg);
+            z-index: 1;
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        .page.exiting {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .page-content {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            border-radius: 2px;
+            box-shadow:
+                0 1px 3px rgba(0, 0, 0, 0.05),
+                0 10px 40px rgba(212, 165, 116, 0.08),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+            position: relative;
+        }
+
+        .page-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.3), transparent);
+        }
+
+        .page-content.left-align {
+            text-align: left;
+        }
+
+        .main-text {
+            font-size: 1.75rem;
+            font-weight: 400;
+            margin-bottom: var(--spacing-sm);
+            letter-spacing: 0.01em;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .small-text {
+            font-size: 1.125rem;
+            color: var(--muted);
+            margin-top: var(--spacing-md);
+            font-weight: 300;
+        }
+
+        .tiny-muted {
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-bottom: var(--spacing-lg);
+            font-weight: 300;
+        }
+
+        .italic {
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--muted);
+            margin-bottom: var(--spacing-md);
+            font-weight: 300;
+        }
+
+        .playful {
+            font-size: 1.25rem;
+            margin-top: var(--spacing-md);
+            color: var(--muted);
+        }
+
+        .soft-text {
+            font-size: 1rem;
+            color: var(--muted);
+            margin-top: var(--spacing-lg);
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        button {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+            border: 1px solid rgba(42, 42, 42, 0.2);
+            color: var(--charcoal);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.125rem;
+            padding: 0.75rem 2rem;
+            margin-top: var(--spacing-xl);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 0.02em;
+            font-weight: 400;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--charcoal), #3a3a3a);
+            color: var(--cream);
+            border-color: var(--charcoal);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .spacing {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .decorative-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0.15;
+        }
+
+        .decorative-corner.top-left {
+            top: 10px;
+            left: 10px;
+            border-top: 1px solid var(--accent);
+            border-left: 1px solid var(--accent);
+        }
+
+        .decorative-corner.bottom-right {
+            bottom: 10px;
+            right: 10px;
+            border-bottom: 1px solid var(--accent);
+            border-right: 1px solid var(--accent);
+        }
+
+        @media (max-width: 600px) {
+            .main-text {
+                font-size: 1.5rem;
+            }
+
+            .muted {
+                font-size: 1.25rem;
+            }
+
+            .small-text {
+                font-size: 1rem;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 0.625rem 1.75rem;
+            }
+
+            .page-content {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .main-text {
+                font-size: 1.375rem;
+            }
+
+            .muted {
+                font-size: 1.125rem;
+            }
+
+            body {
+                padding: var(--spacing-sm);
+            }
+
+            .page {
+                padding: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page active" data-page="0">
+        <div class="page-content">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">This isn't a website</div>
+            <div class="muted">it's a small story</div>
+            <button onclick="nextPage()">Start reading →</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="1">
+        <div class="page-content left-align">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="italic">for Tume🦚</div>
+            <div class="tiny-muted">just so you know I got bored and built you this website lol</div>
+            <div class="main-text spacing">For the past few months</div>
+            <div class="main-text spacing">things have been going…</div>
+            <div class="muted">a bit smoother than usual</div>
+            <button onclick="nextPage()">turn the page</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="2">
+        <div class="page-content left-align">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">Probably because I get to see someone</div>
+            <div class="main-text">as great as you</div>
+            <div class="playful">I mean</div>
+            <div class="playful">not that great 😁</div>
+            <div class="playful">(had to humble you)</div>
+            <button onclick="nextPage()">keep reading</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="3">
+        <div class="page-content left-align">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">Also</div>
+            <div class="main-text spacing">this really wasn't planned</div>
+            <div class="small-text">I just noticed at some point</div>
+            <div class="small-text">you became part of my normal</div>
+            <button onclick="nextPage()">keep going</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="4">
+        <div class="page-content left-align">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">But great in the way</div>
+            <div class="main-text spacing">a really good book is great</div>
+            <div class="muted spacing">The kind you don't rush</div>
+            <div class="muted">and don't forget</div>
+            <button onclick="nextPage()">next page</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="5">
+        <div class="page-content left-align">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">I'm really grateful for you</div>
+            <div class="muted spacing">you know that, right</div>
+            <div class="main-text spacing">As a really good close friend first and foremost</div>
+            <div class="muted spacing">And as someone genuinely important in my life</div>
+            <div class="soft-text">I don't even know if I'm truly deserving of that</div>
+            <div class="soft-text">but alhamdulillah</div>
+            <button onclick="nextPage()">continue</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="6">
+        <div class="page-content left-align">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">It's the small things really</div>
+            <div class="muted spacing">random conversations</div>
+            <div class="muted spacing">unexpected laughs</div>
+            <div class="muted spacing">comfort without trying</div>
+            <div class="small-text">that's usually how the important stuff sneaks in</div>
+            <button onclick="nextPage()">turn the page</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="7">
+        <div class="page-content left-align">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">I wanted to give you something</div>
+            <div class="muted spacing">not yet though</div>
+            <div class="small-text">You could guess what it is</div>
+            <div class="small-text">but that would ruin the fun</div>
+            <button onclick="nextPage()">one more page</button>
+        </div>
+    </div>
+
+    <div class="page" data-page="8">
+        <div class="page-content">
+            <div class="decorative-corner top-left"></div>
+            <div class="decorative-corner bottom-right"></div>
+            <div class="main-text spacing">The gift is close</div>
+            <div class="muted spacing">really close</div>
+            <div class="small-text">Now wait for it</div>
+            <div class="small-text">like the last chapter of a good book</div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 8;
+
+        function nextPage() {
+            if (currentPage >= totalPages) return;
+
+            const current = document.querySelector(`[data-page="${currentPage}"]`);
+            const next = document.querySelector(`[data-page="${currentPage + 1}"]`);
+
+            current.classList.add('exiting');
+
+            setTimeout(() => {
+                current.classList.remove('active', 'exiting');
+                next.classList.add('active');
+            }, 400);
+
+            currentPage++;
+        }
+    </script>
+
+</body>
+
+</html>
