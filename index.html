@@ -49,9 +49,80 @@
             50% { opacity: 0.8; transform: scale(1.2); }
         }
 
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        @keyframes pageFlip {
+            0% {
+                transform: perspective(1000px) rotateY(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: perspective(1000px) rotateY(-90deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: perspective(1000px) rotateY(-180deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pageFlipIn {
+            0% {
+                transform: perspective(1000px) rotateY(90deg);
+                opacity: 0;
+            }
+            100% {
+                transform: perspective(1000px) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
         body {
             font-family: 'Cormorant Garamond', serif;
-            background: linear-gradient(135deg, #fef1f5 0%, #fde3eb 25%, #fbd5e1 50%, #fde3eb 75%, #fef1f5 100%);
+            background: linear-gradient(135deg, #fef1f5, #fde3eb, #fbd5e1, #fde3eb, #fef1f5);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: var(--charcoal);
             min-height: 100vh;
             display: flex;
@@ -61,12 +132,34 @@
             line-height: 1.7;
             padding: var(--spacing-md);
             position: relative;
+            cursor: none;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.15s ease;
+        }
+
+        .cursor-book {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
         .floating-book {
             position: absolute;
             opacity: 0.15;
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: none;
+            transition: all 0.3s ease;
+        }
+
+        .floating-book:hover {
+            opacity: 0.3;
+            transform: scale(1.1) rotate(5deg) !important;
         }
 
         .book-1 {
@@ -162,6 +255,24 @@
             background: rgba(255, 255, 255, 0.4);
         }
 
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .heart-particle {
+            color: var(--accent);
+            font-size: 20px;
+            animation: confettiFall 8s linear infinite;
+        }
+
+        .star-particle {
+            color: var(--gold);
+            font-size: 16px;
+            animation: confettiFall 10s linear infinite;
+        }
+
         .sparkle {
             position: absolute;
             width: 4px;
@@ -199,6 +310,38 @@
             animation-delay: -1.5s;
         }
 
+        .progress-indicator {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(232, 165, 184, 0.2);
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(232, 165, 184, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--accent);
+            transform: scale(1.3);
+        }
+
+        .progress-dot.completed {
+            background: var(--gold);
+        }
+
         .page {
             position: absolute;
             width: 100%;
@@ -215,11 +358,15 @@
             opacity: 1;
             pointer-events: auto;
             transform: translateX(0);
+            animation: breathe 6s ease-in-out infinite;
+        }
+
+        .page.active .page-content {
+            animation: pageFlipIn 0.8s ease;
         }
 
         .page.exiting {
-            opacity: 0;
-            transform: translateX(-20px);
+            animation: pageFlip 0.8s ease forwards;
         }
 
         .page-content {
@@ -267,6 +414,21 @@
             font-weight: 400;
             margin-bottom: var(--spacing-sm);
             letter-spacing: 0.01em;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .main-text:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .main-text:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .main-text:hover {
+            color: var(--accent);
+            transition: color 0.3s ease;
         }
 
         .muted {
@@ -274,6 +436,14 @@
             font-size: 1.5rem;
             font-weight: 300;
             margin-bottom: var(--spacing-md);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.6s;
+        }
+
+        .muted:hover {
+            color: var(--accent);
+            transition: color 0.3s ease;
         }
 
         .small-text {
@@ -281,6 +451,9 @@
             color: var(--muted);
             margin-top: var(--spacing-md);
             font-weight: 300;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.8s;
         }
 
         .tiny-muted {
@@ -288,6 +461,9 @@
             color: var(--muted);
             margin-bottom: var(--spacing-lg);
             font-weight: 300;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.4s;
         }
 
         .italic {
@@ -296,12 +472,28 @@
             color: var(--muted);
             margin-bottom: var(--spacing-md);
             font-weight: 300;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
         }
 
         .playful {
             font-size: 1.25rem;
             margin-top: var(--spacing-md);
             color: var(--muted);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .playful:nth-of-type(3) {
+            animation-delay: 0.8s;
+        }
+
+        .playful:nth-of-type(4) {
+            animation-delay: 1s;
+        }
+
+        .playful:nth-of-type(5) {
+            animation-delay: 1.2s;
         }
 
         .soft-text {
@@ -310,6 +502,22 @@
             margin-top: var(--spacing-lg);
             font-weight: 300;
             font-style: italic;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 1s;
+        }
+
+        .interactive-heart {
+            display: inline-block;
+            font-size: 2rem;
+            cursor: none;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .interactive-heart:hover {
+            animation: heartPulse 0.5s ease infinite;
+            filter: drop-shadow(0 0 10px var(--accent));
         }
 
         button {
@@ -320,7 +528,7 @@
             font-size: 1.125rem;
             padding: 0.75rem 2rem;
             margin-top: var(--spacing-xl);
-            cursor: pointer;
+            cursor: none;
             transition: all 0.4s ease;
             letter-spacing: 0.02em;
             font-weight: 500;
@@ -328,6 +536,9 @@
             position: relative;
             overflow: hidden;
             border-radius: 50px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards, bounce 2s ease-in-out infinite;
+            animation-delay: 1.2s, 2s;
         }
 
         button::before {
@@ -349,12 +560,13 @@
             background: linear-gradient(135deg, var(--accent), var(--gold));
             color: white;
             border-color: var(--accent);
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.05);
             box-shadow: 0 6px 25px rgba(232, 165, 184, 0.4);
+            animation: none;
         }
 
         button:active {
-            transform: translateY(-1px);
+            transform: translateY(-1px) scale(1.02);
         }
 
         .spacing {
@@ -382,6 +594,46 @@
             border-bottom: 2px solid var(--gold);
             border-right: 2px solid var(--gold);
             border-radius: 0 0 4px 0;
+        }
+
+        .confetti-burst {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+
+        @keyframes confettiBurst {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .easter-egg {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 20px;
+            opacity: 0.3;
+            cursor: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .easter-egg:hover {
+            opacity: 1;
+            transform: scale(1.5) rotate(15deg);
         }
 
         @media (max-width: 600px) {
@@ -417,6 +669,28 @@
             .book-3, .book-4 {
                 display: none;
             }
+
+            .custom-cursor {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
+
+            button, .floating-book, .interactive-heart, .easter-egg {
+                cursor: pointer;
+            }
+
+            .progress-indicator {
+                top: 10px;
+                padding: 8px 15px;
+            }
+
+            .progress-dot {
+                width: 8px;
+                height: 8px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -440,10 +714,26 @@
 </head>
 <body>
 
-    <div class="floating-book book-1"></div>
-    <div class="floating-book book-2"></div>
-    <div class="floating-book book-3"></div>
-    <div class="floating-book book-4"></div>
+    <div class="custom-cursor">
+        <span class="cursor-book">📖</span>
+    </div>
+
+    <div class="progress-indicator">
+        <div class="progress-dot active" data-page="0"></div>
+        <div class="progress-dot" data-page="1"></div>
+        <div class="progress-dot" data-page="2"></div>
+        <div class="progress-dot" data-page="3"></div>
+        <div class="progress-dot" data-page="4"></div>
+        <div class="progress-dot" data-page="5"></div>
+        <div class="progress-dot" data-page="6"></div>
+        <div class="progress-dot" data-page="7"></div>
+        <div class="progress-dot" data-page="8"></div>
+    </div>
+
+    <div class="floating-book book-1" onclick="showEasterEgg(this, '📚')"></div>
+    <div class="floating-book book-2" onclick="showEasterEgg(this, '✨')"></div>
+    <div class="floating-book book-3" onclick="showEasterEgg(this, '💫')"></div>
+    <div class="floating-book book-4" onclick="showEasterEgg(this, '🌟')"></div>
 
     <div class="sparkle sparkle-1"></div>
     <div class="sparkle sparkle-2"></div>
@@ -457,6 +747,7 @@
             <div class="main-text spacing">This isn't a website</div>
             <div class="muted">it's a small story</div>
             <button onclick="nextPage()">Start reading →</button>
+            <div class="easter-egg" onclick="showEasterEgg(this, 'You found me! 🎉')">🔍</div>
         </div>
     </div>
 
@@ -507,6 +798,7 @@
             <div class="muted spacing">The kind you don't rush</div>
             <div class="muted">and don't forget</div>
             <button onclick="nextPage()">next page</button>
+            <div class="easter-egg" onclick="showEasterEgg(this, 'Books are magic! 📖✨')">📚</div>
         </div>
     </div>
 
@@ -514,7 +806,7 @@
         <div class="page-content left-align">
             <div class="decorative-corner top-left"></div>
             <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">I'm really grateful for you</div>
+            <div class="main-text spacing">I'm really grateful for you <span class="interactive-heart" onclick="burstConfetti(event)">💖</span></div>
             <div class="muted spacing">you know that, right</div>
             <div class="main-text spacing">As a really good close friend first and foremost</div>
             <div class="muted spacing">And as someone genuinely important in my life</div>
@@ -546,6 +838,7 @@
             <div class="small-text">You could guess what it is</div>
             <div class="small-text">but that would ruin the fun</div>
             <button onclick="nextPage()">one more page</button>
+            <div class="easter-egg" onclick="showEasterEgg(this, 'Almost there! 🎁')">🎀</div>
         </div>
     </div>
 
@@ -564,21 +857,162 @@
         let currentPage = 0;
         const totalPages = 8;
 
+        // Custom cursor
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const particleCount = 15;
+            const hearts = ['💕', '💖', '💗', '💝'];
+            const stars = ['⭐', '✨', '🌟', '💫'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const isHeart = Math.random() > 0.5;
+                const particle = document.createElement('div');
+                particle.className = isHeart ? 'particle heart-particle' : 'particle star-particle';
+                particle.textContent = isHeart ? hearts[Math.floor(Math.random() * hearts.length)] : stars[Math.floor(Math.random() * stars.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+                document.body.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Page navigation with sound
         function nextPage() {
             if (currentPage >= totalPages) return;
 
             const current = document.querySelector(`[data-page="${currentPage}"]`);
             const next = document.querySelector(`[data-page="${currentPage + 1}"]`);
 
+            // Update progress indicator
+            const dots = document.querySelectorAll('.progress-dot');
+            dots[currentPage].classList.remove('active');
+            dots[currentPage].classList.add('completed');
+            
             current.classList.add('exiting');
             
             setTimeout(() => {
                 current.classList.remove('active', 'exiting');
                 next.classList.add('active');
-            }, 400);
+                dots[currentPage + 1].classList.add('active');
+                
+                // Special confetti for important pages
+                if (currentPage + 1 === 5 || currentPage + 1 === 8) {
+                    setTimeout(() => burstConfetti(), 400);
+                }
+            }, 800);
 
             currentPage++;
         }
+
+        // Confetti burst
+        function burstConfetti(event) {
+            const colors = ['#e8a5b8', '#d4a574', '#fbd5e1', '#f9c6d8'];
+            const emojis = ['💖', '✨', '💕', '🌟', '💝', '⭐'];
+            const count = 30;
+            
+            const x = event ? event.clientX : window.innerWidth / 2;
+            const y = event ? event.clientY : window.innerHeight / 2;
+
+            for (let i = 0; i < count; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                
+                if (Math.random() > 0.5) {
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                } else {
+                    confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    confetti.style.fontSize = '20px';
+                }
+
+                confetti.style.left = x + 'px';
+                confetti.style.top = y + 'px';
+
+                const angle = (Math.PI * 2 * i) / count;
+                const velocity = 100 + Math.random() * 100;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+
+                confetti.style.setProperty('--tx', tx + 'px');
+                confetti.style.setProperty('--ty', ty + 'px');
+
+                document.body.appendChild(confetti);
+
+                confetti.style.animation = 'confettiBurst 1.5s ease-out forwards';
+
+                setTimeout(() => confetti.remove(), 1500);
+            }
+        }
+
+        // Easter egg messages
+        function showEasterEgg(element, message) {
+            const messageEl = document.createElement('div');
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(232, 165, 184, 0.95);
+                color: white;
+                padding: 20px 40px;
+                border-radius: 50px;
+                font-size: 1.5rem;
+                z-index: 10000;
+                animation: fadeInUp 0.5s ease;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            `;
+            document.body.appendChild(messageEl);
+            
+            burstConfetti({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
+
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                messageEl.style.transition = 'all 0.5s ease';
+                setTimeout(() => messageEl.remove(), 500);
+            }, 2000);
+        }
+
+        // Parallax effect for floating books
+        document.addEventListener('mousemove', (e) => {
+            const books = document.querySelectorAll('.floating-book');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+
+            books.forEach((book, index) => {
+                const speed = (index + 1) * 10;
+                const x = (mouseX - 0.5) * speed;
+                const y = (mouseY - 0.5) * speed;
+                
+                book.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                nextPage();
+            }
+        });
+
+        // Add sound toggle (optional - silent by default)
+        let soundEnabled = false;
+
+        // Welcome confetti on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                burstConfetti({ clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 });
+            }, 500);
+        });
     </script>
 
 </body>
