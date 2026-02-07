@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>A Small Story</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Remove blue highlight on tap */
         }
         
         /* Gentle swaying for flowers */
@@ -114,6 +115,7 @@
             height: 620px;
             transform-style: preserve-3d;
             z-index: 10;
+            transition: height 0.3s ease; /* Smooth resize */
         }
 
         .page {
@@ -230,6 +232,7 @@
             z-index: 20;
             position: relative;
             overflow: hidden;
+            -webkit-appearance: none; /* Mobile Safari fix */
         }
         button:hover { background: var(--flower-pink); color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(173, 20, 87, 0.2); }
 
@@ -325,11 +328,67 @@
             margin-bottom: 20px;
         }
 
+        /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 600px) {
-            .book { max-width: 90%; height: 550px; }
+            body {
+                padding: 0.5rem; /* Maximize screen space */
+                align-items: center; /* Keep centered */
+            }
+
+            .book {
+                width: 95%;
+                max-width: 100%;
+                /* Use viewport height to prevent scrolling issues */
+                height: 75vh; 
+                min-height: 400px;
+                max-height: 600px;
+            }
+
+            .front {
+                padding: 1.5rem 1rem; /* Smaller padding */
+            }
+
+            /* Adjust typography scaling */
+            .main-text { font-size: 1.35rem; margin-bottom: 0.5rem; }
+            .muted { font-size: 1.15rem; margin-bottom: 1rem; }
+            .small-text { font-size: 1.05rem; }
+            .tiny-muted { font-size: 0.85rem; }
+            .italic { font-size: 1rem; }
+            
+            /* Smaller buttons */
+            button {
+                margin-top: 1.5rem;
+                padding: 0.7rem 1.8rem;
+                font-size: 0.85rem;
+            }
+
+            /* Tame the background for small screens */
             .bg-flower { opacity: 0.2; }
-            .f-1, .f-3 { display: none; }
-            button { font-size: 0.85rem; }
+            .f-1, .f-3 { display: none; } /* Reduce clutter */
+            
+            /* Optimize image sizes */
+            .story-image {
+                max-height: 40%;
+                border-width: 5px;
+            }
+            
+            #intro-image {
+                border-width: 5px;
+                max-height: 60%;
+            }
+
+            /* Smaller Gift Icon */
+            .gift-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+        }
+
+        /* Landscape Mobile Fix */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .book {
+                height: 90vh;
+                max-width: 500px;
+            }
+            .main-text { font-size: 1.2rem; }
+            .front { padding: 1rem; }
         }
     </style>
 </head>
