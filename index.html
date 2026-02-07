@@ -59,14 +59,6 @@
             0% { opacity: 0; transform: translateY(10px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-
-        /* NEW: Bouncy Pop Animation */
-        @keyframes popBounce {
-            0% { opacity: 0; transform: scale(0.5) rotate(-5deg); }
-            60% { opacity: 1; transform: scale(1.05) rotate(2deg); }
-            80% { transform: scale(0.98) rotate(-1deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
-        }
         
         body {
             font-family: 'Cormorant Garamond', serif;
@@ -80,6 +72,7 @@
             line-height: 1.7;
             padding: var(--spacing-md);
             perspective: 2000px;
+            touch-action: manipulation; /* Improves touch response */
         }
         
         /* Background decorative elements */
@@ -115,7 +108,7 @@
             height: 620px;
             transform-style: preserve-3d;
             z-index: 10;
-            transition: height 0.3s ease; /* Smooth resize */
+            transition: height 0.3s ease;
         }
 
         .page {
@@ -126,8 +119,9 @@
             left: 0;
             transform-origin: left center;
             transform-style: preserve-3d;
-            transition: transform 1.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition: transform 1.4s cubic-bezier(0.645, 0.045, 0.355, 1); /* Slightly faster */
             cursor: default;
+            will-change: transform; /* Performance optimization */
         }
 
         .page:nth-child(1) { z-index: 10; }
@@ -151,6 +145,8 @@
             border-radius: 4px 12px 12px 4px;
             background-color: var(--paper);
             overflow: hidden;
+            /* Performance: reduce complex shadow rendering during animation if possible, 
+               but keeping for aesthetics. Browser handles this better without large images. */
         }
 
         .front {
@@ -232,7 +228,8 @@
             z-index: 20;
             position: relative;
             overflow: hidden;
-            -webkit-appearance: none; /* Mobile Safari fix */
+            -webkit-appearance: none;
+            touch-action: manipulation;
         }
         button:hover { background: var(--flower-pink); color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(173, 20, 87, 0.2); }
 
@@ -240,57 +237,7 @@
         .corner-tl { top: 20px; left: 20px; transform: rotate(-45deg); }
         .corner-br { bottom: 20px; right: 20px; transform: rotate(135deg); }
 
-        /* --- UPDATED IMAGE STYLES --- */
-        
-        .story-image {
-            max-width: 85%;
-            max-height: 55%;
-            object-fit: cover;
-            /* Polaroid Pop Style */
-            border: 8px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            margin-bottom: var(--spacing-sm);
-            /* Hidden initially to allow animation */
-            opacity: 0; 
-            transform: scale(0.5);
-            /* Pop Animation */
-            animation: popBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-            animation-delay: 0.2s;
-            background: #f0f0f0; /* Fallback color */
-        }
-
-        /* Intro Sequence Styles */
-        #intro-wrapper {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--paper);
-            z-index: 30;
-            transition: opacity 1.5s ease;
-            border-radius: 4px 12px 12px 4px;
-        }
-
-        #intro-image {
-            max-width: 90%;
-            max-height: 80%;
-            /* Polaroid Pop Style */
-            border: 8px solid white;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            /* Initial State */
-            opacity: 0;
-            transform: scale(0.5) rotate(-3deg);
-            /* Pop Animation */
-            animation: popBounce 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-            background: #f0f0f0; /* Fallback color */
-        }
-
-        #page-0-content {
-            opacity: 0;
-            transition: opacity 1.5s ease;
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-
+        /* Tap Reveal Styles */
         .tap-wrapper {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; transition: transform 0.3s ease;
@@ -314,79 +261,45 @@
         
         .hidden-content.visible { display: flex; animation: revealFade 1.5s forwards; }
 
-        /* Error state styling for broken images */
-        img:not([src]):not([srcset]), img[src=""] { visibility: hidden; }
-        
-        /* Message if image breaks */
-        .img-error-msg {
-            display: none;
-            padding: 20px;
-            background: #fce4ec;
-            color: #ad1457;
-            border: 2px dashed #ad1457;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-
         /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 600px) {
             body {
-                padding: 0.5rem; /* Maximize screen space */
-                align-items: center; /* Keep centered */
+                padding: 0.5rem;
+                align-items: center;
             }
 
             .book {
                 width: 95%;
                 max-width: 100%;
-                /* Use viewport height to prevent scrolling issues */
                 height: 75vh; 
                 min-height: 400px;
                 max-height: 600px;
             }
 
             .front {
-                padding: 1.5rem 1rem; /* Smaller padding */
+                padding: 1.5rem 1rem;
             }
 
-            /* Adjust typography scaling */
             .main-text { font-size: 1.35rem; margin-bottom: 0.5rem; }
             .muted { font-size: 1.15rem; margin-bottom: 1rem; }
             .small-text { font-size: 1.05rem; }
             .tiny-muted { font-size: 0.85rem; }
             .italic { font-size: 1rem; }
             
-            /* Smaller buttons */
             button {
                 margin-top: 1.5rem;
                 padding: 0.7rem 1.8rem;
                 font-size: 0.85rem;
             }
 
-            /* Tame the background for small screens */
             .bg-flower { opacity: 0.2; }
-            .f-1, .f-3 { display: none; } /* Reduce clutter */
+            .f-1, .f-3 { display: none; }
             
-            /* Optimize image sizes */
-            .story-image {
-                max-height: 40%;
-                border-width: 5px;
-            }
-            
-            #intro-image {
-                border-width: 5px;
-                max-height: 60%;
-            }
-
-            /* Smaller Gift Icon */
             .gift-icon { font-size: 3.5rem; margin-bottom: 1rem; }
         }
 
-        /* Landscape Mobile Fix */
         @media (max-height: 500px) and (orientation: landscape) {
-            .book {
-                height: 90vh;
-                max-width: 500px;
-            }
+            .book { height: 90vh; max-width: 500px; }
             .main-text { font-size: 1.2rem; }
             .front { padding: 1rem; }
         }
@@ -409,22 +322,11 @@
         <!-- Page 0 -->
         <div class="page" id="page-0">
             <div class="page-face front">
-                
-                <!-- Intro Image Sequence -->
-                <div id="intro-wrapper" class="playing">
-                    <img src="IMG_4647.jpg" id="intro-image" alt="Image 4647" onerror="this.style.display='none'; document.getElementById('error-intro').style.display='block'">
-                    <div id="error-intro" class="img-error-msg">Image IMG_4647.jpg not found.<br>Please save it in the same folder.</div>
-                </div>
-
-                <!-- Main Content -->
-                <div id="page-0-content">
-                    <div class="corner-flower corner-tl">🥀</div>
-                    <div class="corner-flower corner-br">🥀</div>
-                    <div class="main-text spacing">This isn't a website</div>
-                    <div class="muted">it's a small story</div>
-                    <button onclick="turnPage(0)">Start Reading</button>
-                </div>
-
+                <div class="corner-flower corner-tl">🥀</div>
+                <div class="corner-flower corner-br">🥀</div>
+                <div class="main-text spacing">This isn't a website</div>
+                <div class="muted">it's a small story</div>
+                <button onclick="turnPage(0)">Start Reading</button>
             </div>
             <div class="page-face back">❦</div>
         </div>
@@ -532,15 +434,15 @@
                 <div class="corner-flower corner-br">✨</div>
                 
                 <div id="tap-trigger" class="tap-wrapper">
-                    <div class="gift-icon">💐</div>
-                    <div class="tap-hint">Tap to bloom</div>
+                    <div class="gift-icon">🎁</div>
+                    <div class="tap-hint">Tap to open</div>
                 </div>
 
                 <div id="final-content" class="hidden-content">
-                    <img src="IMG_4645.jpg" alt="Image 4645" class="story-image" onerror="this.style.display='none'; document.getElementById('error-final').style.display='block'">
-                    <div id="error-final" class="img-error-msg">Image IMG_4645.jpg not found.<br>Please save it in the same folder.</div>
-                    <div class="main-text spacing" style="margin-top: 15px;">A rose for a rose</div>
-                    <div class="tiny-muted">and maybe a small website too</div>
+                    <div class="main-text spacing">The gift is close</div>
+                    <div class="muted spacing">really close</div>
+                    <div class="small-text">Now wait for it</div>
+                    <div class="small-text">like the last chapter of a good book</div>
                 </div>
             </div>
             <div class="page-face back">❦</div>
@@ -565,26 +467,6 @@
                 content.classList.add('visible');
             }
         }
-
-        // Handle Intro Sequence
-        window.onload = function() {
-            const introWrapper = document.getElementById('intro-wrapper');
-            const mainContent = document.getElementById('page-0-content');
-            
-            // Wait 6 seconds, then fade out image and fade in text
-            setTimeout(() => {
-                if(introWrapper) {
-                    introWrapper.style.opacity = '0';
-                    setTimeout(() => {
-                        introWrapper.style.display = 'none';
-                    }, 1500);
-                }
-                
-                if(mainContent) {
-                    mainContent.style.opacity = '1';
-                }
-            }, 6000);
-        };
     </script>
 </body>
 </html>
