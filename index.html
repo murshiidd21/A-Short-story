@@ -6,53 +6,71 @@
     <title>A Small Story</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-light: #fef1f5;
-            --pink-mid: #fde3eb;
-            --pink-soft: #fbd5e1;
-            --charcoal: #2a2a2a;
-            --muted: #6a6a6a;
-            --accent: #e8a5b8;
-            --gold: #d4a574;
-            --spacing-xs: 0.5rem;
+            /* Floral Palette */
+            --rose-white: #fff9fa;
+            --rose-light: #fce4ec;
+            --rose-dust: #e1bee7;
+            --sage-light: #dcedc8;
+            --sage-deep: #aed581;
+            --flower-pink: #f48fb1;
+            --flower-deep: #ad1457;
+            
+            --text-main: #4a2c2a;
+            --text-light: #795548;
+            
+            --paper: #fffdf7;
+            --gold: #d4af37;
+            
             --spacing-sm: 1rem;
             --spacing-md: 1.5rem;
             --spacing-lg: 2.5rem;
             --spacing-xl: 4rem;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(2deg); }
+        
+        /* Gentle swaying for flowers */
+        @keyframes sway {
+            0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+            50% { transform: translate(10px, -15px) rotate(10deg); }
+        }
+        
+        /* Falling petals effect */
+        @keyframes falling {
+            0% { transform: translate(0, -10%) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { transform: translate(100px, 100vh) rotate(360deg); opacity: 0; }
         }
 
-        @keyframes floatAlt {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(-3deg); }
+        @keyframes pulseText {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+        
+        @keyframes revealFade {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes floatSlow {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(1deg); }
+        /* NEW: Bouncy Pop Animation */
+        @keyframes popBounce {
+            0% { opacity: 0; transform: scale(0.5) rotate(-5deg); }
+            60% { opacity: 1; transform: scale(1.05) rotate(2deg); }
+            80% { transform: scale(0.98) rotate(-1deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.2); }
-        }
-
+        
         body {
             font-family: 'Cormorant Garamond', serif;
-            background: linear-gradient(135deg, #fef1f5 0%, #fde3eb 25%, #fbd5e1 50%, #fde3eb 75%, #fef1f5 100%);
-            color: var(--charcoal);
+            background: radial-gradient(circle at top left, var(--rose-white), var(--rose-light));
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -60,526 +78,454 @@
             overflow: hidden;
             line-height: 1.7;
             padding: var(--spacing-md);
+            perspective: 2000px;
+        }
+        
+        /* Background decorative elements */
+        .bg-flower {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.4;
+            filter: blur(1px);
+            z-index: 0;
+            pointer-events: none;
+            animation: sway 8s ease-in-out infinite;
+        }
+        
+        .f-1 { top: 5%; left: 5%; font-size: 4rem; animation-delay: 0s; color: var(--flower-pink); }
+        .f-2 { top: 80%; left: 10%; font-size: 3rem; animation-delay: -2s; color: var(--sage-deep); }
+        .f-3 { top: 15%; right: 10%; font-size: 3.5rem; animation-delay: -4s; color: var(--flower-deep); }
+        .f-4 { bottom: 10%; right: 15%; font-size: 5rem; animation-delay: -1s; color: var(--rose-dust); }
+        
+        .petal {
+            position: absolute;
+            top: -10%;
+            font-size: 1.5rem;
+            animation: falling 12s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Book Container */
+        .book {
             position: relative;
-        }
-
-        .floating-book {
-            position: absolute;
-            opacity: 0.15;
-            pointer-events: none;
-        }
-
-        .book-1 {
-            top: 10%;
-            left: 8%;
-            width: 80px;
-            height: 100px;
-            background: linear-gradient(45deg, var(--accent) 0%, var(--gold) 100%);
-            border-radius: 3px;
-            box-shadow: 
-                inset -3px 0 8px rgba(0,0,0,0.1),
-                0 10px 30px rgba(232, 165, 184, 0.3);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .book-1::before {
-            content: '';
-            position: absolute;
-            left: 10px;
-            top: 0;
-            width: 3px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .book-2 {
-            top: 65%;
-            right: 10%;
-            width: 70px;
-            height: 90px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--accent) 100%);
-            border-radius: 3px;
-            box-shadow: 
-                inset -3px 0 8px rgba(0,0,0,0.1),
-                0 10px 30px rgba(212, 165, 116, 0.3);
-            animation: floatAlt 7s ease-in-out infinite;
-        }
-
-        .book-2::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .book-3 {
-            bottom: 15%;
-            left: 15%;
-            width: 60px;
-            height: 80px;
-            background: linear-gradient(90deg, var(--accent) 0%, var(--pink-soft) 100%);
-            border-radius: 3px;
-            box-shadow: 
-                inset -2px 0 6px rgba(0,0,0,0.1),
-                0 10px 30px rgba(232, 165, 184, 0.3);
-            animation: floatSlow 8s ease-in-out infinite;
-        }
-
-        .book-3::before {
-            content: '';
-            position: absolute;
-            left: 7px;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .book-4 {
-            top: 30%;
-            right: 20%;
-            width: 55px;
-            height: 75px;
-            background: linear-gradient(180deg, var(--gold) 0%, var(--pink-soft) 100%);
-            border-radius: 3px;
-            box-shadow: 
-                inset -2px 0 6px rgba(0,0,0,0.1),
-                0 10px 30px rgba(212, 165, 116, 0.3);
-            animation: float 9s ease-in-out infinite;
-            animation-delay: -2s;
-        }
-
-        .book-4::before {
-            content: '';
-            position: absolute;
-            left: 6px;
-            top: 0;
-            width: 2px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .sparkle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--accent);
-            border-radius: 50%;
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        .sparkle-1 {
-            top: 20%;
-            left: 25%;
-            animation: sparkle 3s ease-in-out infinite;
-        }
-
-        .sparkle-2 {
-            top: 50%;
-            right: 30%;
-            animation: sparkle 4s ease-in-out infinite;
-            animation-delay: -1s;
-        }
-
-        .sparkle-3 {
-            bottom: 25%;
-            right: 15%;
-            animation: sparkle 3.5s ease-in-out infinite;
-            animation-delay: -2s;
-        }
-
-        .sparkle-4 {
-            top: 70%;
-            left: 40%;
-            animation: sparkle 4.5s ease-in-out infinite;
-            animation-delay: -1.5s;
+            width: 100%;
+            max-width: 480px;
+            height: 620px;
+            transform-style: preserve-3d;
+            z-index: 10;
         }
 
         .page {
             position: absolute;
             width: 100%;
-            max-width: 560px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            transform: translateX(20px);
-            padding: var(--spacing-lg);
-            z-index: 10;
-        }
-
-        .page.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateX(0);
-        }
-
-        .page.exiting {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-
-        .page-content {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px);
-            padding: var(--spacing-xl) var(--spacing-lg);
-            border-radius: 8px;
-            box-shadow: 
-                0 8px 32px rgba(232, 165, 184, 0.2),
-                0 2px 8px rgba(0, 0, 0, 0.05),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-            position: relative;
-            border: 2px solid rgba(232, 165, 184, 0.15);
-        }
-
-        .page-content::before {
-            content: '';
-            position: absolute;
+            height: 100%;
             top: 0;
-            left: 5%;
-            right: 5%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0.3;
+            left: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 1.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: default;
         }
 
-        .page-content::after {
+        .page:nth-child(1) { z-index: 10; }
+        .page:nth-child(2) { z-index: 9; }
+        .page:nth-child(3) { z-index: 8; }
+        .page:nth-child(4) { z-index: 7; }
+        .page:nth-child(5) { z-index: 6; }
+        .page:nth-child(6) { z-index: 5; }
+        .page:nth-child(7) { z-index: 4; }
+        .page:nth-child(8) { z-index: 3; }
+        .page:nth-child(9) { z-index: 2; }
+
+        .page-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 4px 12px 12px 4px;
+            background-color: var(--paper);
+            overflow: hidden;
+        }
+
+        .front {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.05) 0%, transparent 5%),
+                radial-gradient(#dcedc8 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px;
+            box-shadow: inset 5px 0 15px rgba(0,0,0,0.05), 0 5px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(173, 20, 87, 0.1);
+        }
+        
+        .front::before {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 5%;
-            right: 5%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-            opacity: 0.3;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 1px solid var(--flower-pink);
+            border-radius: 2px 8px 8px 2px;
+            pointer-events: none;
+            opacity: 0.4;
         }
 
-        .page-content.left-align {
+        .front::after {
+            content: '🌸';
+            position: absolute;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            opacity: 0.5;
+        }
+
+        .front.left-align {
+            align-items: flex-start;
             text-align: left;
         }
 
-        .main-text {
-            font-size: 1.75rem;
-            font-weight: 400;
-            margin-bottom: var(--spacing-sm);
-            letter-spacing: 0.01em;
+        .back {
+            transform: rotateY(180deg);
+            background-color: #f8f0f2;
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(244, 143, 177, 0.05) 10px, rgba(244, 143, 177, 0.05) 20px);
+            box-shadow: inset -5px 0 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--flower-pink);
+            font-size: 2rem;
         }
 
-        .muted {
-            color: var(--muted);
-            font-size: 1.5rem;
-            font-weight: 300;
-            margin-bottom: var(--spacing-md);
-        }
+        .page.flipped { transform: rotateY(-180deg); }
 
-        .small-text {
-            font-size: 1.125rem;
-            color: var(--muted);
-            margin-top: var(--spacing-md);
-            font-weight: 300;
-        }
-
-        .tiny-muted {
-            font-size: 0.95rem;
-            color: var(--muted);
-            margin-bottom: var(--spacing-lg);
-            font-weight: 300;
-        }
-
-        .italic {
-            font-style: italic;
-            font-size: 1rem;
-            color: var(--muted);
-            margin-bottom: var(--spacing-md);
-            font-weight: 300;
-        }
-
-        .playful {
-            font-size: 1.25rem;
-            margin-top: var(--spacing-md);
-            color: var(--muted);
-        }
-
-        .soft-text {
-            font-size: 1rem;
-            color: var(--muted);
-            margin-top: var(--spacing-lg);
-            font-weight: 300;
-            font-style: italic;
-        }
+        /* Typography */
+        .main-text { font-family: 'Cinzel Decorative', serif; font-size: 1.6rem; color: var(--text-main); margin-bottom: var(--spacing-sm); letter-spacing: 0.02em; line-height: 1.4; }
+        .muted { font-family: 'Cormorant Garamond', serif; color: var(--text-light); font-size: 1.4rem; font-style: italic; margin-bottom: var(--spacing-md); }
+        .small-text { font-size: 1.15rem; color: var(--text-light); margin-top: var(--spacing-md); }
+        .tiny-muted { font-size: 0.9rem; color: #9e9e9e; margin-bottom: var(--spacing-lg); font-style: italic; }
+        .italic { font-style: italic; font-size: 1.1rem; color: var(--flower-deep); margin-bottom: var(--spacing-md); }
+        .playful { font-size: 1.25rem; margin-top: var(--spacing-md); color: var(--text-light); }
+        .soft-text { font-size: 1.1rem; color: var(--text-light); margin-top: var(--spacing-lg); font-style: italic; }
 
         button {
-            background: linear-gradient(135deg, rgba(232, 165, 184, 0.3), rgba(212, 165, 116, 0.3));
-            border: 2px solid rgba(232, 165, 184, 0.4);
-            color: var(--charcoal);
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.125rem;
-            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #fff 0%, var(--rose-light) 100%);
+            border: 1px solid var(--flower-pink);
+            color: var(--flower-deep);
+            font-family: 'Cinzel Decorative', serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.8rem 2.2rem;
             margin-top: var(--spacing-xl);
             cursor: pointer;
             transition: all 0.4s ease;
-            letter-spacing: 0.02em;
-            font-weight: 500;
-            box-shadow: 0 4px 15px rgba(232, 165, 184, 0.2);
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 10px rgba(173, 20, 87, 0.1);
+            border-radius: 50px;
+            z-index: 20;
             position: relative;
             overflow: hidden;
-            border-radius: 50px;
         }
+        button:hover { background: var(--flower-pink); color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(173, 20, 87, 0.2); }
 
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-            transition: left 0.6s ease;
-        }
+        .corner-flower { position: absolute; font-size: 1.5rem; opacity: 0.6; }
+        .corner-tl { top: 20px; left: 20px; transform: rotate(-45deg); }
+        .corner-br { bottom: 20px; right: 20px; transform: rotate(135deg); }
 
-        button:hover::before {
-            left: 100%;
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, var(--accent), var(--gold));
-            color: white;
-            border-color: var(--accent);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(232, 165, 184, 0.4);
-        }
-
-        button:active {
-            transform: translateY(-1px);
-        }
-
-        .spacing {
+        /* --- UPDATED IMAGE STYLES --- */
+        
+        .story-image {
+            max-width: 85%;
+            max-height: 55%;
+            object-fit: cover;
+            /* Polaroid Pop Style */
+            border: 8px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
             margin-bottom: var(--spacing-sm);
+            /* Hidden initially to allow animation */
+            opacity: 0; 
+            transform: scale(0.5);
+            /* Pop Animation */
+            animation: popBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            animation-delay: 0.2s;
+            background: #f0f0f0; /* Fallback color */
         }
 
-        .decorative-corner {
+        /* Intro Sequence Styles */
+        #intro-wrapper {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            opacity: 0.2;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--paper);
+            z-index: 30;
+            transition: opacity 1.5s ease;
+            border-radius: 4px 12px 12px 4px;
         }
 
-        .decorative-corner.top-left {
-            top: 15px;
-            left: 15px;
-            border-top: 2px solid var(--accent);
-            border-left: 2px solid var(--accent);
-            border-radius: 4px 0 0 0;
+        #intro-image {
+            max-width: 90%;
+            max-height: 80%;
+            /* Polaroid Pop Style */
+            border: 8px solid white;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            /* Initial State */
+            opacity: 0;
+            transform: scale(0.5) rotate(-3deg);
+            /* Pop Animation */
+            animation: popBounce 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            background: #f0f0f0; /* Fallback color */
         }
 
-        .decorative-corner.bottom-right {
-            bottom: 15px;
-            right: 15px;
-            border-bottom: 2px solid var(--gold);
-            border-right: 2px solid var(--gold);
-            border-radius: 0 0 4px 0;
+        #page-0-content {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        .tap-wrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.3s ease;
+            width: 100%; height: 100%; min-height: 200px;
+        }
+        .tap-wrapper:hover .gift-icon { transform: scale(1.15) rotate(5deg); }
+        
+        .gift-icon {
+            font-size: 5rem; line-height: 1; margin-bottom: 1.5rem;
+            animation: pulseText 2s infinite ease-in-out;
+            filter: drop-shadow(0 5px 15px rgba(244, 143, 177, 0.4));
+            transition: transform 0.3s ease; user-select: none;
+        }
+        
+        .tap-hint { font-family: 'Cinzel Decorative', cursive; font-size: 1.1rem; letter-spacing: 0.1em; color: var(--flower-deep); opacity: 0.7; }
+        
+        .hidden-content {
+            display: none; opacity: 0; width: 100%; height: 100%;
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        
+        .hidden-content.visible { display: flex; animation: revealFade 1.5s forwards; }
+
+        /* Error state styling for broken images */
+        img:not([src]):not([srcset]), img[src=""] { visibility: hidden; }
+        
+        /* Message if image breaks */
+        .img-error-msg {
+            display: none;
+            padding: 20px;
+            background: #fce4ec;
+            color: #ad1457;
+            border: 2px dashed #ad1457;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
         }
 
         @media (max-width: 600px) {
-            .main-text {
-                font-size: 1.5rem;
-            }
-
-            .muted {
-                font-size: 1.25rem;
-            }
-
-            .small-text {
-                font-size: 1rem;
-            }
-
-            button {
-                font-size: 1rem;
-                padding: 0.625rem 1.75rem;
-            }
-
-            .page-content {
-                padding: var(--spacing-lg) var(--spacing-md);
-            }
-
-            .floating-book {
-                opacity: 0.1;
-            }
-
-            .book-1, .book-2 {
-                transform: scale(0.8);
-            }
-
-            .book-3, .book-4 {
-                display: none;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .main-text {
-                font-size: 1.375rem;
-            }
-
-            .muted {
-                font-size: 1.125rem;
-            }
-
-            body {
-                padding: var(--spacing-sm);
-            }
-
-            .page {
-                padding: var(--spacing-md);
-            }
+            .book { max-width: 90%; height: 550px; }
+            .bg-flower { opacity: 0.2; }
+            .f-1, .f-3 { display: none; }
+            button { font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
+    <div class="bg-flower f-1">🌺</div>
+    <div class="bg-flower f-2">🌿</div>
+    <div class="bg-flower f-3">🌹</div>
+    <div class="bg-flower f-4">🌸</div>
+    
+    <div class="petal" style="left: 10%; animation-delay: 0s">🌸</div>
+    <div class="petal" style="left: 30%; animation-delay: 2s">🍃</div>
+    <div class="petal" style="left: 60%; animation-delay: 4s">🌸</div>
+    <div class="petal" style="left: 80%; animation-delay: 6s">🌺</div>
+    <div class="petal" style="left: 20%; animation-delay: 8s">🌹</div>
 
-    <div class="floating-book book-1"></div>
-    <div class="floating-book book-2"></div>
-    <div class="floating-book book-3"></div>
-    <div class="floating-book book-4"></div>
+    <div class="book">
+        
+        <!-- Page 0 -->
+        <div class="page" id="page-0">
+            <div class="page-face front">
+                
+                <!-- Intro Image Sequence -->
+                <div id="intro-wrapper" class="playing">
+                    <img src="IMG_4647.jpg" id="intro-image" alt="Image 4647" onerror="this.style.display='none'; document.getElementById('error-intro').style.display='block'">
+                    <div id="error-intro" class="img-error-msg">Image IMG_4647.jpg not found.<br>Please save it in the same folder.</div>
+                </div>
 
-    <div class="sparkle sparkle-1"></div>
-    <div class="sparkle sparkle-2"></div>
-    <div class="sparkle sparkle-3"></div>
-    <div class="sparkle sparkle-4"></div>
+                <!-- Main Content -->
+                <div id="page-0-content">
+                    <div class="corner-flower corner-tl">🥀</div>
+                    <div class="corner-flower corner-br">🥀</div>
+                    <div class="main-text spacing">This isn't a website</div>
+                    <div class="muted">it's a small story</div>
+                    <button onclick="turnPage(0)">Start Reading</button>
+                </div>
 
-    <div class="page active" data-page="0">
-        <div class="page-content">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">This isn't a website</div>
-            <div class="muted">it's a small story</div>
-            <button onclick="nextPage()">Start reading →</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="1">
-        <div class="page-content left-align">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="italic">for Tume🦚</div>
-            <div class="tiny-muted">just so you know I got bored and built you this website lol</div>
-            <div class="main-text spacing">For the past few months</div>
-            <div class="main-text spacing">things have been going…</div>
-            <div class="muted">a bit smoother than usual</div>
-            <button onclick="nextPage()">turn the page</button>
+        <!-- Page 1 -->
+        <div class="page" id="page-1">
+            <div class="page-face front left-align">
+                <div class="corner-flower corner-tl">🌿</div>
+                <div class="italic">for Tume 🦚</div>
+                <div class="tiny-muted">just so you know I got bored and built you this website lol</div>
+                <div class="main-text spacing">For the past few months</div>
+                <div class="main-text spacing">things have been going…</div>
+                <div class="muted">a bit smoother than usual</div>
+                <button onclick="turnPage(1)">turn page</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="2">
-        <div class="page-content left-align">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">Probably because I get to see someone</div>
-            <div class="main-text">as great as you</div>
-            <div class="playful">I mean</div>
-            <div class="playful">not that great 😁</div>
-            <div class="playful">(had to humble you)</div>
-            <button onclick="nextPage()">keep reading</button>
+        <!-- Page 2 -->
+        <div class="page" id="page-2">
+            <div class="page-face front left-align">
+                <div class="corner-flower corner-br">🌸</div>
+                <div class="main-text spacing">Probably because I get to see someone</div>
+                <div class="main-text">as great as you</div>
+                <div class="playful">I mean</div>
+                <div class="playful">not that great 😁</div>
+                <div class="playful">(had to humble you)</div>
+                <button onclick="turnPage(2)">keep reading</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="3">
-        <div class="page-content left-align">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">Also</div>
-            <div class="main-text spacing">this really wasn't planned</div>
-            <div class="small-text">I just noticed at some point</div>
-            <div class="small-text">you became part of my normal</div>
-            <button onclick="nextPage()">keep going</button>
+        <!-- Page 3 -->
+        <div class="page" id="page-3">
+            <div class="page-face front left-align">
+                <div class="corner-flower corner-tl">🌹</div>
+                <div class="main-text spacing">Also</div>
+                <div class="main-text spacing">this really wasn't planned</div>
+                <div class="small-text">I just noticed at some point</div>
+                <div class="small-text">you became part of my normal</div>
+                <button onclick="turnPage(3)">keep going</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="4">
-        <div class="page-content left-align">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">But great in the way</div>
-            <div class="main-text spacing">a really good book is great</div>
-            <div class="muted spacing">The kind you don't rush</div>
-            <div class="muted">and don't forget</div>
-            <button onclick="nextPage()">next page</button>
+        <!-- Page 4 -->
+        <div class="page" id="page-4">
+            <div class="page-face front left-align">
+                <div class="corner-flower corner-br">🌷</div>
+                <div class="main-text spacing">But great in the way</div>
+                <div class="main-text spacing">a really good book is great</div>
+                <div class="muted spacing">The kind you don't rush</div>
+                <div class="muted">and don't forget</div>
+                <button onclick="turnPage(4)">next page</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="5">
-        <div class="page-content left-align">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">I'm really grateful for you</div>
-            <div class="muted spacing">you know that, right</div>
-            <div class="main-text spacing">As a really good close friend first and foremost</div>
-            <div class="muted spacing">And as someone genuinely important in my life</div>
-            <div class="soft-text">I don't even know if I'm truly deserving of that</div>
-            <div class="soft-text">but alhamdulillah</div>
-            <button onclick="nextPage()">continue</button>
+        <!-- Page 5 -->
+        <div class="page" id="page-5">
+            <div class="page-face front left-align">
+                <div class="corner-flower corner-tl">💐</div>
+                <div class="main-text spacing">I'm really grateful for you</div>
+                <div class="muted spacing">you know that, right?</div>
+                <div class="main-text spacing">As a really good close friend first and foremost</div>
+                <div class="muted spacing">And as someone genuinely important in my life</div>
+                <div class="soft-text">I don't even know if I'm truly deserving of that</div>
+                <div class="soft-text">but alhamdulillah</div>
+                <button onclick="turnPage(5)">continue</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="6">
-        <div class="page-content left-align">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">It's the small things really</div>
-            <div class="muted spacing">random conversations</div>
-            <div class="muted spacing">unexpected laughs</div>
-            <div class="muted spacing">comfort without trying</div>
-            <div class="small-text">that's usually how the important stuff sneaks in</div>
-            <button onclick="nextPage()">turn the page</button>
+        <!-- Page 6 -->
+        <div class="page" id="page-6">
+            <div class="page-face front left-align">
+                <div class="corner-flower corner-br">🌺</div>
+                <div class="main-text spacing">It's the small things really</div>
+                <div class="muted spacing">random conversations</div>
+                <div class="muted spacing">unexpected laughs</div>
+                <div class="muted spacing">comfort without trying</div>
+                <div class="small-text">that's usually how the important stuff sneaks in</div>
+                <button onclick="turnPage(6)">turn page</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="7">
-        <div class="page-content left-align">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">I wanted to give you something</div>
-            <div class="muted spacing">not yet though</div>
-            <div class="small-text">You could guess what it is</div>
-            <div class="small-text">but that would ruin the fun</div>
-            <button onclick="nextPage()">one more page</button>
+        <!-- Page 7 -->
+        <div class="page" id="page-7">
+            <div class="page-face front left-align">
+                <div class="corner-flower corner-tl">🌻</div>
+                <div class="main-text spacing">I wanted to give you something</div>
+                <div class="muted spacing">not yet though</div>
+                <div class="small-text">You could guess what it is</div>
+                <div class="small-text">but that would ruin the fun</div>
+                <button onclick="turnPage(7)">one more page</button>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
-    </div>
 
-    <div class="page" data-page="8">
-        <div class="page-content">
-            <div class="decorative-corner top-left"></div>
-            <div class="decorative-corner bottom-right"></div>
-            <div class="main-text spacing">The gift is close</div>
-            <div class="muted spacing">really close</div>
-            <div class="small-text">Now wait for it</div>
-            <div class="small-text">like the last chapter of a good book</div>
+        <!-- Page 8 (Final) -->
+        <div class="page" id="page-8">
+            <div class="page-face front" onclick="revealLastPage()">
+                <div class="corner-flower corner-tl">🎁</div>
+                <div class="corner-flower corner-br">✨</div>
+                
+                <div id="tap-trigger" class="tap-wrapper">
+                    <div class="gift-icon">💐</div>
+                    <div class="tap-hint">Tap to bloom</div>
+                </div>
+
+                <div id="final-content" class="hidden-content">
+                    <img src="IMG_4645.jpg" alt="Image 4645" class="story-image" onerror="this.style.display='none'; document.getElementById('error-final').style.display='block'">
+                    <div id="error-final" class="img-error-msg">Image IMG_4645.jpg not found.<br>Please save it in the same folder.</div>
+                    <div class="main-text spacing" style="margin-top: 15px;">A rose for a rose</div>
+                    <div class="tiny-muted">and maybe a small website too</div>
+                </div>
+            </div>
+            <div class="page-face back">❦</div>
         </div>
+
     </div>
 
     <script>
-        let currentPage = 0;
-        const totalPages = 8;
-
-        function nextPage() {
-            if (currentPage >= totalPages) return;
-
-            const current = document.querySelector(`[data-page="${currentPage}"]`);
-            const next = document.querySelector(`[data-page="${currentPage + 1}"]`);
-
-            current.classList.add('exiting');
-            
-            setTimeout(() => {
-                current.classList.remove('active', 'exiting');
-                next.classList.add('active');
-            }, 400);
-
-            currentPage++;
+        function turnPage(pageIndex) {
+            const page = document.getElementById(`page-${pageIndex}`);
+            if (page) {
+                page.classList.add('flipped');
+            }
         }
-    </script>
 
+        function revealLastPage() {
+            const trigger = document.getElementById('tap-trigger');
+            const content = document.getElementById('final-content');
+            
+            if (trigger.style.display !== 'none') {
+                trigger.style.display = 'none';
+                content.classList.add('visible');
+            }
+        }
+
+        // Handle Intro Sequence
+        window.onload = function() {
+            const introWrapper = document.getElementById('intro-wrapper');
+            const mainContent = document.getElementById('page-0-content');
+            
+            // Wait 6 seconds, then fade out image and fade in text
+            setTimeout(() => {
+                if(introWrapper) {
+                    introWrapper.style.opacity = '0';
+                    setTimeout(() => {
+                        introWrapper.style.display = 'none';
+                    }, 1500);
+                }
+                
+                if(mainContent) {
+                    mainContent.style.opacity = '1';
+                }
+            }, 6000);
+        };
+    </script>
 </body>
 </html>
